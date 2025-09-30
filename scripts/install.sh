@@ -41,9 +41,8 @@ fi
 # Initialize coordination database
 if [ ! -f "intercept/coordination.db" ] || [ ! -s "intercept/coordination.db" ]; then
     echo "🗄️  Initializing coordination database..."
-    python3 -c "
+    PYTHONPATH=. python3 -c "
 from intercept.pm_coordinator import PMCoordinator
-coordinator = PMCoordinator(bmad_core_path='../.bmad-core', db_path='intercept/coordination.db')
 print('✓ Database initialized')
 "
 fi
