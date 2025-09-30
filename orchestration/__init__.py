@@ -30,7 +30,7 @@ class TaskAssignmentOrchestrator:
     Main interface for task assignment functionality
     Preserves original API while using modular backend
     """
-    def __init__(self, db_path: str = ".bmad-auto/intercept/coordination.db"):
+    def __init__(self, db_path: str = "intercept/coordination.db"):
         self.db_path = db_path
         self.engine = TaskAssignmentEngine()
         self.capability_matcher = CapabilityMatcher()
@@ -54,7 +54,7 @@ class QualityGateOrchestrator:
     Main interface for quality gate functionality
     Preserves original API while using modular backend
     """
-    def __init__(self, db_path: str = ".bmad-auto/intercept/coordination.db"):
+    def __init__(self, db_path: str = "intercept/coordination.db"):
         self.gate_processor = QualityGateSimple(db_path)
         self.analytics = QualityAnalyticsCore(db_path)
         self.escalation = QualityEscalationSimple(db_path)

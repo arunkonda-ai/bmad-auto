@@ -49,7 +49,7 @@ class SimpleQualityResult:
 class QualityGateSimple:
     """Simplified quality gate processor for BMAD compliance"""
 
-    def __init__(self, db_path: str = ".bmad-auto/intercept/coordination.db"):
+    def __init__(self, db_path: str = "intercept/coordination.db"):
         self.db_path = db_path
         self.logger = logger
         self.quality_thresholds = {

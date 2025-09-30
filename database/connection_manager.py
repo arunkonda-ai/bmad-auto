@@ -31,7 +31,7 @@ class ConnectionConfig:
     pg_max_connections: int = 20
 
     # SQLite settings
-    sqlite_path: str = ".bmad-auto/intercept/coordination.db"
+    sqlite_path: str = "intercept/coordination.db"
     sqlite_timeout: float = 30.0
     sqlite_check_same_thread: bool = False
 

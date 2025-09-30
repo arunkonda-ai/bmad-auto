@@ -33,7 +33,7 @@ class AgentExtensionLoader:
     """
 
     def __init__(self, bmad_core_path: str = ".bmad-core",
-                 bmad_auto_path: str = ".bmad-auto"):
+                 bmad_auto_path: str = "."):
         self.bmad_core_path = Path(bmad_core_path)
         self.bmad_auto_path = Path(bmad_auto_path)
         self.loaded_extensions: Dict[str, AgentExtension] = {}
