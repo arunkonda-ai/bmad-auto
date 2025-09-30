@@ -1,0 +1,354 @@
+# PM Coordination Workflow - BMAD Auto
+# Converted from .bmad-auto/intercept/pm_coordinator.py
+# Phase 1: YAML-based PM orchestration with command interception
+
+name: pm-coordination
+version: "1.0"
+description: "PM-centric coordination workflow for BMAD Auto system"
+maintainer: "John (PM Agent)"
+bmad_core_preservation: true
+
+# Configuration
+config:
+  database_path: "intercept/coordination.db"
+  bmad_core_path: ".bmad-core"
+  context_dir: "intercept/context"
+  logging_level: "INFO"
+
+# Strategic command categories requiring PM oversight
+coordination_rules:
+  strategic_commands:
+    - "create-prd"
+    - "create-epic"
+    - "create-architecture"
+    - "shard-prd"
+
+  cross_agent_commands:
+    - "coordinate-agents"
+    - "review-story"
+    - "qa-gate"
+
+  complexity_triggers:
+    high: "requires_pm_approval"
+    critical: "requires_pm_approval"
+    medium: "pm_notification"
+    low: "proceed_direct"
+
+# Main coordination workflow
+workflows:
+
+  # Primary coordination decision workflow
+  coordinate_command:
+    description: "Determine coordination approach for agent command"
+    inputs:
+      - agent: str
+      - command: str
+      - args: list (optional)
+      - context: dict (optional)
+
+    steps:
+      - name: "evaluate_coordination_need"
+        type: "decision"
+        logic:
+          if: "command in strategic_commands"
+          then:
+            coordinate: true
+            reason: "strategic_decision"
+            approval_required: true
+          elif: "command in cross_agent_commands"
+          then:
+            coordinate: true
+            reason: "cross_agent_coordination"
+            approval_required: false
+          elif: "context.complexity in ['high', 'critical']"
+          then:
+            coordinate: true
+            reason: "high_complexity"
+            approval_required: true
+          else:
+            coordinate: false
+            reason: "routine_task"
+            approval_required: false
+
+      - name: "log_coordination_decision"
+        type: "database_insert"
+        table: "coordination_log"
+        data:
+          timestamp: "{{ now() }}"
+          agent: "{{ inputs.agent }}"
+          command: "{{ inputs.command }}"
+          context: "{{ inputs.context | json }}"
+          status: "pending"
+          pm_decision: "PM evaluation: {{ step.evaluate_coordination_need.reason }}"
+
+      - name: "prepare_execution_plan"
+        type: "data_transform"
+        output:
+          coordination_id: "{{ step.log_coordination_decision.last_row_id }}"
+          agent: "{{ inputs.agent }}"
+          command: "{{ inputs.command }}"
+          args: "{{ inputs.args | default([]) }}"
+          coordinate: "{{ step.evaluate_coordination_need.coordinate }}"
+          approval_required: "{{ step.evaluate_coordination_need.approval_required }}"
+          pm_guidance: "PM evaluation: {{ step.evaluate_coordination_need.reason }}"
+          execution_method: "{{ 'coordinated' if step.evaluate_coordination_need.coordinate else 'direct' }}"
+          bmad_core_preserved: true
+          context_injection: "{{ workflow.prepare_context_injection }}"
+
+  # Context preparation for .bmad-core command execution
+  prepare_context_injection:
+    description: "Prepare coordination context for agent execution"
+    inputs:
+      - agent: str
+      - command: str
+      - context: dict (optional)
+
+    steps:
+      - name: "build_injection_context"
+        type: "data_transform"
+        output:
+          pm_coordination: true
+          coordination_notes: "PM coordinated execution for {{ inputs.agent }}"
+          execution_id: "{{ inputs.agent }}_{{ inputs.command }}_{{ timestamp() }}"
+          bmad_core_path: "{{ config.bmad_core_path }}"
+          user_context: "{{ inputs.context | default({}) }}"
+          complexity: "{{ inputs.context.complexity | default('medium') }}"
+          priority: "{{ inputs.context.priority | default('normal') }}"
+
+  # Agent status tracking
+  get_agent_status:
+    description: "Get current coordination status for agent"
+    inputs:
+      - agent: str
+
+    steps:
+      - name: "fetch_recent_coordinations"
+        type: "database_query"
+        query: "SELECT * FROM coordination_log WHERE agent = ? ORDER BY created_at DESC LIMIT 5"
+        params: ["{{ inputs.agent }}"]
+
+      - name: "get_github_issues"
+        type: "github_query"
+        action: "get_agent_issues"
+        agent: "{{ inputs.agent }}"
+
+      - name: "compile_status"
+        type: "data_transform"
+        output:
+          agent: "{{ inputs.agent }}"
+          recent_coordinations: "{{ step.fetch_recent_coordinations | length }}"
+          last_activity: "{{ step.fetch_recent_coordinations[0].created_at if step.fetch_recent_coordinations else null }}"
+          coordination_rate: "{{ (step.fetch_recent_coordinations | selectattr('status', 'equalto', 'coordinated') | length) / max(step.fetch_recent_coordinations | length, 1) }}"
+          bmad_core_available: "{{ config.bmad_core_path | path_exists }}"
+          github_issues: "{{ step.get_github_issues.count | default(0) }}"
+          status: "operational"
+
+  # Agent notification workflow
+  notify_agent:
+    description: "Send notification to agent via GitHub issue"
+    inputs:
+      - target_agent: str
+      - message: str
+      - urgency: str (default: "normal")
+
+    steps:
+      - name: "create_github_notification"
+        type: "github_action"
+        action: "create_issue"
+        title: "[@{{ inputs.target_agent }}] Agent Notification"
+        body: |
+          ## Agent Coordination Notification
+
+          **Target Agent**: {{ inputs.target_agent }}
+          **Notification Type**: information
+          **Urgency**: {{ inputs.urgency }}
+          **Message**: {{ inputs.message }}
+          **Created**: {{ now() }}
+
+          ### Action Required:
+          Please review this notification and respond as needed.
+
+          *Auto-generated by BMAD Auto YAML Coordinator*
+        labels:
+          - "agent-notification"
+          - "agent:{{ inputs.target_agent }}"
+          - "urgency:{{ inputs.urgency }}"
+
+      - name: "log_notification"
+        type: "database_insert"
+        table: "coordination_log"
+        condition: "{{ step.create_github_notification.success }}"
+        data:
+          timestamp: "{{ now() }}"
+          agent: "{{ inputs.target_agent }}"
+          command: "github-notify"
+          context: |
+            {
+              "message": "{{ inputs.message }}",
+              "urgency": "{{ inputs.urgency }}"
+            }
+          status: "coordinated"
+          pm_decision: "Agent notification created via GitHub"
+
+  # PM approval request workflow
+  request_pm_approval:
+    description: "Request PM approval via GitHub issue"
+    inputs:
+      - requesting_agent: str
+      - decision_context: str
+      - proposed_solution: str
+      - complexity: str (default: "medium")
+
+    steps:
+      - name: "create_approval_issue"
+        type: "github_action"
+        action: "create_issue"
+        title: "[PM Approval] {{ inputs.decision_context[:50] }}..."
+        body: |
+          ## PM Approval Request
+
+          **Requesting Agent**: {{ inputs.requesting_agent }}
+          **Complexity**: {{ inputs.complexity }}
+          **Request Date**: {{ now() }}
+
+          ### Decision Context
+          {{ inputs.decision_context }}
+
+          ### Proposed Solution
+          {{ inputs.proposed_solution }}
+
+          ### PM Action Required
+          Please review and provide approval decision with rationale.
+
+          *Auto-generated by BMAD Auto YAML Coordinator*
+        labels:
+          - "pm-approval"
+          - "agent:{{ inputs.requesting_agent }}"
+          - "complexity:{{ inputs.complexity }}"
+
+      - name: "log_approval_request"
+        type: "database_insert"
+        table: "coordination_log"
+        condition: "{{ step.create_approval_issue.success }}"
+        data:
+          timestamp: "{{ now() }}"
+          agent: "{{ inputs.requesting_agent }}"
+          command: "pm-approval-request"
+          context: |
+            {
+              "complexity": "{{ inputs.complexity }}",
+              "context": "{{ inputs.decision_context }}"
+            }
+          status: "pending"
+          pm_decision: "PM approval requested via GitHub"
+
+  # Quality gate workflow
+  request_quality_gate:
+    description: "Request quality gate validation via GitHub issue"
+    inputs:
+      - submitting_agent: str
+      - gate_type: str
+      - work_description: str
+      - validation_criteria: str
+
+    steps:
+      - name: "create_quality_gate_issue"
+        type: "github_action"
+        action: "create_issue"
+        title: "[Quality Gate] {{ inputs.gate_type }} - {{ inputs.submitting_agent }}"
+        body: |
+          ## Quality Gate Request
+
+          **Submitting Agent**: {{ inputs.submitting_agent }}
+          **Gate Type**: {{ inputs.gate_type }}
+          **Submission Date**: {{ now() }}
+
+          ### Work Description
+          {{ inputs.work_description }}
+
+          ### Validation Criteria
+          {{ inputs.validation_criteria }}
+
+          ### Quality Team Action Required
+          Please review and provide validation decision.
+
+          *Auto-generated by BMAD Auto YAML Coordinator*
+        labels:
+          - "quality-gate"
+          - "gate-type:{{ inputs.gate_type }}"
+          - "agent:{{ inputs.submitting_agent }}"
+
+      - name: "log_quality_gate"
+        type: "database_insert"
+        table: "coordination_log"
+        condition: "{{ step.create_quality_gate_issue.success }}"
+        data:
+          timestamp: "{{ now() }}"
+          agent: "{{ inputs.submitting_agent }}"
+          command: "quality-gate"
+          context: |
+            {
+              "gate_type": "{{ inputs.gate_type }}",
+              "work": "{{ inputs.work_description }}"
+            }
+          status: "pending"
+          pm_decision: "Quality gate requested via GitHub"
+
+  # Coordination overview
+  get_coordination_overview:
+    description: "Get comprehensive coordination status"
+
+    steps:
+      - name: "get_recent_coordinations"
+        type: "database_query"
+        query: "SELECT * FROM coordination_log ORDER BY created_at DESC LIMIT 20"
+
+      - name: "get_github_status"
+        type: "github_query"
+        action: "get_coordination_status"
+
+      - name: "compile_overview"
+        type: "data_transform"
+        output:
+          pm_coordinator_status: "operational"
+          recent_coordinations: "{{ step.get_recent_coordinations | length }}"
+          coordination_database: "{{ config.database_path }}"
+          bmad_core_preserved: "{{ config.bmad_core_path | path_exists }}"
+          github_integration: "{{ step.get_github_status }}"
+          langfuse_monitoring: "{{ monitoring.get_session_stats() }}"
+
+# Error handling
+error_handling:
+  database_error:
+    action: "log_error"
+    fallback: "continue_with_limited_functionality"
+
+  github_error:
+    action: "log_error"
+    fallback: "use_local_logging_only"
+
+  bmad_core_missing:
+    action: "halt_execution"
+    message: ".bmad-core directory not found - preservation constraint violated"
+
+# Integration points
+integrations:
+  database:
+    type: "sqlite"
+    path: "{{ config.database_path }}"
+    auto_create_tables: true
+
+  github:
+    type: "gh_cli"
+    required: false
+    fallback: "local_logging"
+
+  langfuse:
+    type: "monitoring"
+    required: false
+
+  bmad_core:
+    type: "directory"
+    path: "{{ config.bmad_core_path }}"
+    preservation_mode: true
+    modification_prohibited: true

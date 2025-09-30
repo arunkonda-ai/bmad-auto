@@ -1,0 +1,291 @@
+# BMAD Auto PM Agent Extension
+# Purpose: Enhance .bmad-core PM with autonomous orchestration capabilities
+# Priority: HIGHEST (Foundation component)
+
+extension:
+  name: "pm-extension"
+  version: "1.0"
+  type: "agent_extension"
+  extends: ".bmad-core/agents/pm.md"
+
+  # Core Enhancement Capabilities
+  additional_capabilities:
+    - autonomous_task_breakdown
+    - workflow_orchestration
+    - cross_agent_coordination
+    - quality_gate_management
+    - resource_provisioning
+    - escalation_protocol_management
+
+  # Spec Kit Integration
+  speckit_commands:
+    - "/specify"
+    - "/plan"
+    - "/clarify"
+    - "/analyze"
+
+  # BMAD Core Integration
+  bmad_core_integration:
+    preservation: "complete"
+    commands: "all_pm_commands_preserved"
+    enhanced_workflows: true
+    autonomous_command_selection: true
+    template_access: "all_templates"
+    checklist_integration: "automated"
+
+  # Autonomous Decision Framework
+  autonomous_decision_framework:
+
+    # Task Analysis & Breakdown
+    task_breakdown:
+      input_analysis:
+        - extract_user_intent
+        - identify_project_scope
+        - assess_complexity_level
+        - determine_workflow_path
+
+      decision_criteria:
+        - task_type_classification
+        - resource_requirements
+        - timeline_constraints
+        - quality_standards
+
+      output_generation:
+        - subtask_creation
+        - agent_assignment
+        - timeline_estimation
+        - resource_allocation
+
+    # Command Selection Intelligence
+    command_selection:
+      bmad_core_commands:
+        decision_matrix:
+          create_prd: "new_product_development"
+          create_story: "feature_development"
+          shard_prd: "complex_project_management"
+          create_epic: "large_initiative_planning"
+
+      speckit_commands:
+        decision_matrix:
+          specify: "requirement_gathering"
+          plan: "technical_planning"
+          clarify: "requirement_refinement"
+          analyze: "cross_artifact_validation"
+
+      context_evaluation:
+        - previous_workflow_outputs
+        - current_project_phase
+        - stakeholder_requirements
+        - technical_constraints
+
+    # Resource Provisioning
+    resource_provisioning:
+      agent_context:
+        - task_description
+        - acceptance_criteria
+        - dependencies
+        - timeline_constraints
+        - quality_standards
+
+      provided_resources:
+        - relevant_bmad_core_templates
+        - applicable_workflow_steps
+        - necessary_checklist_items
+        - required_command_set
+        - historical_patterns
+
+      empowerment_grants:
+        - autonomous_command_selection
+        - workflow_step_execution
+        - quality_gate_integration
+        - escalation_protocols
+
+  # Workflow Orchestration Capabilities
+  workflow_orchestration:
+
+    # Workflow Selection
+    workflow_selection:
+      project_type_mapping:
+        new_product:
+          workflows: ["ideation", "specification", "architecture", "development", "validation", "deployment"]
+          coordination: "sequential_with_gates"
+
+        feature_enhancement:
+          workflows: ["specification", "development", "validation"]
+          coordination: "parallel_optimization"
+
+        bug_fix:
+          workflows: ["specification", "development"]
+          coordination: "fast_track"
+
+        technical_debt:
+          workflows: ["architecture", "development", "validation"]
+          coordination: "quality_focused"
+
+    # Agent Coordination
+    agent_coordination:
+      assignment_algorithm:
+        - match_expertise_to_task
+        - consider_current_workload
+        - optimize_resource_utilization
+        - maintain_quality_standards
+
+      communication_protocols:
+        - hub_based_coordination
+        - status_update_intervals
+        - escalation_triggers
+        - quality_gate_checkpoints
+
+      conflict_resolution:
+        - priority_based_resolution
+        - resource_reallocation
+        - timeline_adjustment
+        - stakeholder_communication
+
+    # Quality Gate Management
+    quality_gate_management:
+      checkpoint_definition:
+        - workflow_transition_points
+        - deliverable_completion
+        - stakeholder_approval_needs
+        - quality_standard_validation
+
+      approval_workflows:
+        automated_checks:
+          - template_compliance
+          - checklist_completion
+          - cross_reference_validation
+
+        human_oversight:
+          - strategic_decision_points
+          - complex_requirement_changes
+          - resource_constraint_escalation
+
+      escalation_protocols:
+        - threshold_definitions
+        - escalation_paths
+        - communication_requirements
+        - resolution_timelines
+
+  # Cross-Agent Coordination Protocols
+  cross_agent_coordination:
+
+    # Task Assignment Patterns
+    task_assignment:
+      architect_coordination:
+        - technical_feasibility_review
+        - system_design_validation
+        - implementation_guidance
+        - quality_architecture_gates
+
+      developer_coordination:
+        - implementation_task_breakdown
+        - code_quality_standards
+        - testing_requirements
+        - delivery_timeline
+
+      qa_coordination:
+        - testing_strategy_definition
+        - quality_criteria_establishment
+        - validation_workflow_design
+        - defect_resolution_process
+
+      ux_coordination:
+        - user_experience_requirements
+        - design_system_integration
+        - usability_validation
+        - interface_quality_gates
+
+      analyst_coordination:
+        - market_research_requirements
+        - competitive_analysis_needs
+        - user_feedback_integration
+        - success_metrics_definition
+
+    # Communication Patterns
+    communication_patterns:
+      status_reporting:
+        frequency: "real_time_updates"
+        format: "structured_status_objects"
+        escalation: "threshold_based"
+
+      collaboration_workflows:
+        - synchronous_coordination_sessions
+        - asynchronous_update_cycles
+        - cross_agent_review_processes
+        - joint_problem_solving_protocols
+
+  # Enhanced PM Capabilities
+  enhanced_capabilities:
+
+    # Strategic Planning
+    strategic_planning:
+      - long_term_roadmap_coordination
+      - resource_optimization_across_projects
+      - stakeholder_expectation_management
+      - risk_assessment_and_mitigation
+
+    # Quality Assurance
+    quality_assurance:
+      - comprehensive_validation_frameworks
+      - automated_quality_checking
+      - continuous_improvement_processes
+      - learning_from_project_outcomes
+
+    # Performance Optimization
+    performance_optimization:
+      - workflow_efficiency_monitoring
+      - resource_utilization_optimization
+      - bottleneck_identification_resolution
+      - continuous_process_improvement
+
+  # Integration Safeguards
+  integration_safeguards:
+
+    # BMAD Core Preservation
+    bmad_core_preservation:
+      - zero_modification_guarantee
+      - complete_backward_compatibility
+      - original_command_functionality
+      - extension_rollback_capability
+
+    # Quality Validation
+    quality_validation:
+      - extension_compatibility_checks
+      - functionality_regression_testing
+      - performance_impact_monitoring
+      - user_experience_validation
+
+    # Error Handling
+    error_handling:
+      graceful_degradation:
+        - fallback_to_core_functionality
+        - extension_disable_capability
+        - manual_override_options
+        - comprehensive_error_logging
+
+      recovery_mechanisms:
+        - automatic_retry_protocols
+        - escalation_to_human_oversight
+        - context_preservation_during_errors
+        - learning_from_failure_patterns
+
+  # Monitoring & Observability
+  monitoring:
+    performance_metrics:
+      - task_completion_time
+      - quality_gate_pass_rate
+      - escalation_frequency
+      - stakeholder_satisfaction
+
+    learning_indicators:
+      - decision_accuracy_improvement
+      - workflow_optimization_gains
+      - resource_utilization_efficiency
+      - cross_agent_coordination_effectiveness
+
+    langfuse_integration:
+      - decision_point_tracking
+      - workflow_orchestration_metrics
+      - quality_gate_performance
+      - learning_and_improvement_patterns

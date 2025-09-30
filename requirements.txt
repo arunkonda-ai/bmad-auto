@@ -1,0 +1,46 @@
+# BMAD Auto Dependencies - Foundation & PM Orchestration Hub
+# Python 3.11+ required
+
+# LangGraph Orchestration Framework (Core requirement for T005)
+langgraph>=0.2.0
+langsmith>=0.1.0
+langchain>=0.2.0
+langchain-core>=0.2.0
+
+# Database Stack
+psycopg2-binary>=2.9.9
+sqlalchemy==2.0.23
+alembic==1.13.0
+
+# SQLite for coordination.db extension
+aiosqlite==0.19.0
+
+# FastAPI Stack for PM API endpoints
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+pydantic>=2.7.4
+pydantic-settings>=2.1.0
+
+# HTTP client for external integrations
+httpx==0.25.2
+requests==2.31.0
+
+# Utilities
+python-multipart==0.0.6
+python-json-logger==2.0.7
+PyYAML==6.0.1
+
+# Claude Code terminal integration (local AI processing)
+# No external dependencies needed - using local terminal sessions
+
+# Development and Testing
+pytest==7.4.3
+pytest-asyncio==0.21.1
+pytest-cov==4.1.0
+black==23.11.0
+isort==5.12.0
+flake8==6.1.0
+
+# Optional integrations for post-MVP features
+# anthropic==0.21.3  # For direct API access if needed
+# z-ai-sdk==1.0.0    # For Z.ai GLM integration (future)

@@ -1,0 +1,275 @@
+# BMAD Auto Architect Agent Extension
+# Purpose: Enhance .bmad-core Architect with technical specification capabilities
+# Priority: HIGH (Core functionality)
+
+extension:
+  name: "architect-extension"
+  version: "1.0"
+  type: "agent_extension"
+  extends: ".bmad-core/agents/architect.md"
+
+  # Core Enhancement Capabilities
+  additional_capabilities:
+    - technical_specification_generation
+    - system_design_validation
+    - cross_artifact_analysis
+    - implementation_guidance
+    - performance_optimization_recommendations
+    - security_architecture_validation
+
+  # Spec Kit Integration
+  speckit_commands:
+    - "/plan"
+    - "/tasks"
+    - "/analyze"
+
+  # BMAD Core Integration
+  bmad_core_integration:
+    preservation: "complete"
+    commands: "all_architect_commands_preserved"
+    enhanced_workflows: true
+    autonomous_design_validation: true
+    template_access: "architecture_templates"
+    checklist_integration: "automated"
+
+  # Autonomous Technical Decision Framework
+  autonomous_technical_framework:
+
+    # System Design Analysis
+    system_design_analysis:
+      requirements_analysis:
+        - extract_technical_requirements
+        - identify_system_constraints
+        - assess_scalability_needs
+        - evaluate_performance_requirements
+
+      architecture_decision_making:
+        - technology_stack_selection
+        - system_architecture_patterns
+        - integration_approach_design
+        - data_flow_optimization
+
+      validation_criteria:
+        - technical_feasibility_assessment
+        - performance_impact_analysis
+        - security_consideration_review
+        - maintainability_evaluation
+
+    # Implementation Guidance Generation
+    implementation_guidance:
+      technical_breakdown:
+        - component_decomposition
+        - interface_definition
+        - dependency_mapping
+        - integration_point_identification
+
+      best_practices_application:
+        - coding_standards_enforcement
+        - design_pattern_recommendations
+        - performance_optimization_strategies
+        - security_best_practices
+
+      quality_assurance:
+        - architecture_review_checklists
+        - code_quality_metrics
+        - testing_strategy_definition
+        - deployment_considerations
+
+  # Technical Specification Capabilities
+  technical_specification:
+
+    # Architecture Documentation
+    architecture_documentation:
+      system_overview:
+        - high_level_architecture_diagrams
+        - component_interaction_maps
+        - data_flow_documentation
+        - technology_stack_specifications
+
+      detailed_specifications:
+        - component_interface_definitions
+        - database_schema_design
+        - api_specification_generation
+        - security_architecture_documentation
+
+      implementation_guides:
+        - development_setup_instructions
+        - deployment_configuration_guides
+        - testing_framework_setup
+        - monitoring_integration_guides
+
+    # Cross-Artifact Analysis
+    cross_artifact_analysis:
+      consistency_validation:
+        - requirement_to_design_traceability
+        - implementation_to_specification_alignment
+        - test_coverage_architecture_validation
+
+      impact_analysis:
+        - change_impact_assessment
+        - dependency_analysis
+        - performance_impact_evaluation
+        - security_impact_review
+
+      optimization_recommendations:
+        - architecture_improvement_suggestions
+        - performance_optimization_opportunities
+        - security_enhancement_recommendations
+        - maintainability_improvements
+
+  # Quality Gate Integration
+  quality_gate_integration:
+
+    # Architecture Review Gates
+    architecture_review_gates:
+      design_completeness:
+        - all_requirements_addressed
+        - architecture_patterns_appropriate
+        - scalability_considerations_included
+        - security_requirements_met
+
+      technical_feasibility:
+        - implementation_complexity_reasonable
+        - technology_choices_justified
+        - resource_requirements_realistic
+        - timeline_feasibility_confirmed
+
+      integration_readiness:
+        - interface_specifications_complete
+        - dependency_management_defined
+        - deployment_strategy_documented
+        - monitoring_approach_specified
+
+    # Quality Validation
+    quality_validation:
+      automated_checks:
+        - architecture_pattern_compliance
+        - coding_standard_validation
+        - security_checklist_completion
+        - performance_benchmark_definition
+
+      manual_reviews:
+        - design_pattern_appropriateness
+        - technology_choice_justification
+        - system_complexity_assessment
+        - maintainability_evaluation
+
+  # Cross-Agent Coordination
+  cross_agent_coordination:
+
+    # PM Coordination
+    pm_coordination:
+      requirement_clarification:
+        - technical_requirement_refinement
+        - feasibility_constraint_communication
+        - timeline_impact_assessment
+        - resource_requirement_specification
+
+      progress_reporting:
+        - design_milestone_updates
+        - technical_risk_identification
+        - implementation_readiness_status
+        - quality_gate_completion_reports
+
+    # Developer Coordination
+    developer_coordination:
+      implementation_support:
+        - technical_specification_clarification
+        - implementation_pattern_guidance
+        - code_review_and_feedback
+        - technical_problem_resolution
+
+      quality_assurance:
+        - architecture_compliance_validation
+        - code_quality_assessment
+        - performance_optimization_guidance
+        - security_implementation_review
+
+    # QA Coordination
+    qa_coordination:
+      testing_strategy:
+        - test_architecture_design
+        - testing_framework_recommendations
+        - quality_metrics_definition
+        - performance_testing_guidance
+
+      validation_support:
+        - architecture_test_validation
+        - integration_testing_guidance
+        - performance_benchmark_validation
+        - security_testing_recommendations
+
+  # Enhanced Architecture Capabilities
+  enhanced_capabilities:
+
+    # System Performance Optimization
+    performance_optimization:
+      - performance_bottleneck_identification
+      - optimization_strategy_development
+      - resource_utilization_analysis
+      - scalability_planning
+
+    # Security Architecture
+    security_architecture:
+      - security_threat_modeling
+      - security_control_implementation
+      - compliance_requirement_mapping
+      - security_testing_strategy
+
+    # Maintainability & Extensibility
+    maintainability:
+      - code_architecture_quality_assessment
+      - refactoring_opportunity_identification
+      - technical_debt_management
+      - future_enhancement_planning
+
+  # Integration Safeguards
+  integration_safeguards:
+
+    # BMAD Core Preservation
+    bmad_core_preservation:
+      - zero_modification_guarantee
+      - complete_backward_compatibility
+      - original_command_functionality
+      - extension_rollback_capability
+
+    # Quality Validation
+    quality_validation:
+      - extension_compatibility_checks
+      - functionality_regression_testing
+      - performance_impact_monitoring
+      - architecture_quality_validation
+
+    # Error Handling
+    error_handling:
+      graceful_degradation:
+        - fallback_to_core_functionality
+        - extension_disable_capability
+        - manual_override_options
+        - comprehensive_error_logging
+
+      recovery_mechanisms:
+        - automatic_retry_protocols
+        - escalation_to_pm_coordination
+        - context_preservation_during_errors
+        - learning_from_technical_failures
+
+  # Monitoring & Observability
+  monitoring:
+    performance_metrics:
+      - design_completion_time
+      - architecture_review_pass_rate
+      - implementation_guidance_effectiveness
+      - technical_decision_accuracy
+
+    quality_indicators:
+      - architecture_quality_scores
+      - implementation_success_rates
+      - performance_optimization_gains
+      - security_validation_completeness
+
+    langfuse_integration:
+      - technical_decision_tracking
+      - architecture_validation_metrics
+      - cross_artifact_analysis_results
+      - implementation_guidance_effectiveness

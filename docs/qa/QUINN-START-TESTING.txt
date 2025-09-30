@@ -1,0 +1,35 @@
+🚨 URGENT: Quinn (QA) - Testing Assignment Ready
+
+================================
+TESTING ASSIGNMENT: T021-T024
+================================
+
+Priority: HIGH
+Assigned By: John (PM)
+Date: 2025-09-29
+
+📋 YOUR TESTING PROMPT:
+/Users/apple/ai-projects/Omcaro/.bmad-auto/docs/qa/Quinn-Testing-Prompt-T021-T024.md
+
+📊 UPDATE PROGRESS IN:
+/Users/apple/ai-projects/Omcaro/.bmad-auto/docs/dev/Dev-sessions-specs-progress.md
+
+🎯 WHAT TO TEST:
+- T021: Agent Extension Loader (230 lines)
+- T022: PM Agent Extension Config (YAML)
+- T023: Agent State Synchronization (254 lines)
+- T024: Agent Capability Management (241+61 lines)
+
+⏱️ ESTIMATED DURATION: 4-6 hours
+
+🚀 ACTION REQUIRED:
+1. Read the testing prompt (detailed test cases provided)
+2. Execute all 4 test phases (Unit, Integration, Performance, Compliance)
+3. Update Dev-sessions-specs-progress.md with your results
+4. Report findings to John (PM) when complete
+
+================================
+START TESTING IMMEDIATELY
+================================
+
+Questions? Contact John (PM)

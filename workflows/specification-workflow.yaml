@@ -1,0 +1,188 @@
+# BMAD Auto Specification Workflow
+# Purpose: Requirements gathering → Formal PRD creation
+# Priority: HIGHEST (Foundation component)
+
+workflow:
+  name: "specification-workflow"
+  version: "1.0"
+  type: "core_workflow"
+  purpose: "Requirements gathering → Formal PRD creation"
+
+  # Entry/Exit Criteria
+  entry_criteria: "Product concept from ideation workflow or direct user requirements"
+  exit_criteria: "Complete PRD with acceptance criteria and technical requirements"
+
+  # Agent Configuration
+  agents:
+    primary: "pm"
+    secondary: ["architect"]
+    escalation: ["human_oversight"]
+
+  # Spec Kit Integration
+  speckit_integration:
+    commands: ["/specify", "/plan"]
+    artifacts: ["spec.md", "plan.md"]
+    validation: "/analyze"
+
+  # BMAD Core Integration
+  bmad_core_resources:
+    templates: ["prd-tmpl.yaml"]
+    checklists: ["pm-checklist.md"]
+    tasks: ["create-doc.md"]
+    commands: ["*create-prd", "*shard-prd"]
+
+  # Workflow Steps
+  steps:
+    - name: "requirements_capture"
+      order: 1
+      agent: "pm"
+      type: "autonomous"
+      description: "Capture and analyze user requirements"
+      actions:
+        - analyze_user_input
+        - identify_requirement_gaps
+        - execute_speckit_specify
+      quality_gate: false
+      output: "initial_requirements.md"
+
+    - name: "requirement_elaboration"
+      order: 2
+      agent: "pm"
+      type: "autonomous"
+      description: "Elaborate requirements using Spec Kit"
+      actions:
+        - run_specify_command
+        - create_detailed_specification
+        - validate_requirement_completeness
+      bmad_core_integration: "create-doc.md"
+      template: "prd-tmpl.yaml"
+      quality_gate: true
+      output: "specification.md"
+
+    - name: "technical_validation"
+      order: 3
+      agent: "architect"
+      type: "validation"
+      description: "Validate technical feasibility"
+      actions:
+        - review_technical_requirements
+        - assess_implementation_complexity
+        - provide_architecture_guidance
+      quality_gate: true
+      escalation_threshold: "high_complexity"
+      output: "technical_validation.md"
+
+    - name: "prd_generation"
+      order: 4
+      agent: "pm"
+      type: "autonomous"
+      description: "Generate comprehensive PRD"
+      actions:
+        - compile_requirements
+        - create_comprehensive_prd
+        - apply_bmad_templates
+      bmad_core_integration: "create-doc.md"
+      template: "prd-tmpl.yaml"
+      checklist: "pm-checklist.md"
+      quality_gate: true
+      output: "final_prd.md"
+
+    - name: "stakeholder_review"
+      order: 5
+      agent: "pm"
+      type: "human_oversight"
+      description: "Final stakeholder review and approval"
+      actions:
+        - present_prd_summary
+        - gather_stakeholder_feedback
+        - implement_approved_changes
+      escalation: "mandatory"
+      output: "approved_prd.md"
+
+  # Quality Gates
+  quality_gates:
+    requirement_completeness:
+      checkpoint: "requirement_elaboration"
+      criteria:
+        - all_user_stories_defined
+        - acceptance_criteria_clear
+        - technical_constraints_identified
+      automated: true
+
+    technical_feasibility:
+      checkpoint: "technical_validation"
+      criteria:
+        - architecture_approach_validated
+        - implementation_complexity_assessed
+        - resource_requirements_defined
+      automated: false
+      human_approval: true
+
+    prd_quality:
+      checkpoint: "prd_generation"
+      criteria:
+        - bmad_checklist_completed
+        - cross_reference_validation
+        - documentation_standards_met
+      automated: true
+      bmad_core_validation: "pm-checklist.md"
+
+  # Error Handling
+  error_handling:
+    incomplete_requirements:
+      action: "return_to_requirements_capture"
+      escalation: "pm_review"
+
+    technical_infeasibility:
+      action: "escalate_to_architect"
+      fallback: "requirement_modification"
+
+    quality_gate_failure:
+      action: "iterative_refinement"
+      max_iterations: 3
+      escalation: "human_oversight"
+
+  # Performance Configuration
+  performance:
+    target_completion_time: "2_hours"
+    max_completion_time: "4_hours"
+    concurrent_agent_limit: 2
+    resource_priority: "high"
+
+  # Integration Points
+  integrations:
+    predecessor_workflows: ["ideation-workflow"]
+    successor_workflows: ["architecture-workflow", "development-workflow"]
+    external_tools:
+      - github_spec_kit
+      - bmad_core_commands
+      - linear_project_management
+
+  # Composition Patterns
+  composition:
+    simple_feature:
+      workflows: ["specification-workflow", "development-workflow"]
+
+    new_product:
+      workflows: ["ideation-workflow", "specification-workflow", "architecture-workflow"]
+
+    bug_fix:
+      workflows: ["specification-workflow"]
+      simplified: true
+
+  # Monitoring & Observability
+  monitoring:
+    success_metrics:
+      - specification_completeness_score
+      - stakeholder_approval_rate
+      - time_to_completion
+
+    failure_indicators:
+      - requirement_iteration_count
+      - quality_gate_failures
+      - escalation_frequency
+
+    langfuse_tracking:
+      - agent_decision_points
+      - quality_gate_results
+      - workflow_performance_metrics

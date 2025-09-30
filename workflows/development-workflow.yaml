@@ -1,0 +1,184 @@
+# BMAD Auto Development Workflow
+# Purpose: Implementation → Feature delivery
+# Priority: HIGH (Core functionality)
+
+workflow:
+  name: "development-workflow"
+  version: "1.0"
+  type: "core_workflow"
+  purpose: "Implementation → Feature delivery"
+
+  # Entry/Exit Criteria
+  entry_criteria: "Approved PRD with technical requirements from specification workflow"
+  exit_criteria: "Implemented features with passing quality gates"
+
+  # Agent Configuration
+  agents:
+    primary: "dev"
+    secondary: ["qa", "architect"]
+    escalation: ["pm", "human_oversight"]
+
+  # Spec Kit Integration
+  speckit_integration:
+    commands: ["/tasks", "/implement"]
+    artifacts: ["tasks.md", "implementation.md"]
+    validation: "/analyze"
+
+  # BMAD Core Integration
+  bmad_core_resources:
+    templates: ["story-tmpl.yaml"]
+    checklists: ["dev-checklist.md", "qa-checklist.md"]
+    tasks: ["create-story.md", "execute-checklist.md"]
+    commands: ["*create-story", "*build", "*test"]
+
+  # Workflow Steps
+  steps:
+    - name: "task_breakdown"
+      order: 1
+      agent: "dev"
+      type: "autonomous"
+      description: "Break down PRD into implementation tasks"
+      actions:
+        - analyze_prd_requirements
+        - create_task_breakdown
+        - execute_speckit_tasks
+      bmad_core_integration: "create-story.md"
+      quality_gate: false
+      output: "task_breakdown.md"
+
+    - name: "implementation_planning"
+      order: 2
+      agent: "architect"
+      type: "validation"
+      description: "Validate implementation approach"
+      actions:
+        - review_task_breakdown
+        - validate_technical_approach
+        - provide_implementation_guidance
+      quality_gate: true
+      output: "implementation_plan.md"
+
+    - name: "feature_implementation"
+      order: 3
+      agent: "dev"
+      type: "autonomous"
+      description: "Implement features according to plan"
+      actions:
+        - execute_implementation_tasks
+        - follow_coding_standards
+        - create_unit_tests
+      bmad_core_integration: "dev-checklist.md"
+      quality_gate: true
+      output: "implemented_features"
+
+    - name: "quality_validation"
+      order: 4
+      agent: "qa"
+      type: "validation"
+      description: "Validate implementation quality"
+      actions:
+        - execute_test_suite
+        - validate_requirements_met
+        - perform_quality_checks
+      bmad_core_integration: "qa-checklist.md"
+      quality_gate: true
+      output: "quality_report.md"
+
+    - name: "integration_testing"
+      order: 5
+      agent: "qa"
+      type: "validation"
+      description: "Perform integration testing"
+      actions:
+        - test_system_integration
+        - validate_cross_component_behavior
+        - performance_testing
+      quality_gate: true
+      escalation_threshold: "test_failures"
+      output: "integration_test_report.md"
+
+  # Quality Gates
+  quality_gates:
+    implementation_plan_approval:
+      checkpoint: "implementation_planning"
+      criteria:
+        - technical_approach_validated
+        - resource_requirements_confirmed
+        - timeline_feasibility_assessed
+      automated: false
+      human_approval: true
+
+    code_quality:
+      checkpoint: "feature_implementation"
+      criteria:
+        - coding_standards_met
+        - unit_test_coverage_adequate
+        - documentation_complete
+      automated: true
+      bmad_core_validation: "dev-checklist.md"
+
+    quality_validation:
+      checkpoint: "quality_validation"
+      criteria:
+        - all_tests_passing
+        - requirements_met
+        - quality_metrics_satisfied
+      automated: true
+      bmad_core_validation: "qa-checklist.md"
+
+    integration_validation:
+      checkpoint: "integration_testing"
+      criteria:
+        - integration_tests_passing
+        - performance_benchmarks_met
+        - system_stability_confirmed
+      automated: true
+
+  # Error Handling
+  error_handling:
+    implementation_failures:
+      action: "return_to_task_breakdown"
+      escalation: "architect_review"
+
+    test_failures:
+      action: "iterative_development"
+      max_iterations: 3
+      escalation: "pm_coordination"
+
+    quality_gate_failure:
+      action: "focused_remediation"
+      escalation: "cross_agent_review"
+
+  # Performance Configuration
+  performance:
+    target_completion_time: "1_week"
+    max_completion_time: "2_weeks"
+    concurrent_agent_limit: 3
+    resource_priority: "high"
+
+  # Integration Points
+  integrations:
+    predecessor_workflows: ["specification-workflow", "architecture-workflow"]
+    successor_workflows: ["validation-workflow"]
+    external_tools:
+      - github_spec_kit
+      - bmad_core_commands
+      - testing_frameworks
+      - ci_cd_pipeline
+
+  # Monitoring & Observability
+  monitoring:
+    success_metrics:
+      - feature_completion_rate
+      - code_quality_scores
+      - test_coverage_percentage
+
+    failure_indicators:
+      - implementation_iteration_count
+      - test_failure_rate
+      - quality_gate_rejections
+
+    langfuse_tracking:
+      - implementation_decision_points
+      - quality_validation_results
+      - workflow_performance_metrics

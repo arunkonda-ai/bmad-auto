@@ -1,0 +1,154 @@
+# PM Agent Extension Configuration
+# Enhances .bmad-core PM agent (John) with BMAD Auto orchestration capabilities
+
+agent_name: pm
+extension_type: orchestration
+base_agent_hash: ""  # Computed dynamically by agent_loader.py
+spec_kit_enabled: true
+is_active: true
+
+extension_config:
+  # Enhanced PM orchestration capabilities
+  capabilities:
+    - autonomous_task_breakdown
+    - multi_agent_coordination
+    - quality_gate_management
+    - decision_reasoning_capture
+    - resource_optimization
+    - human_oversight_integration
+    - workflow_orchestration
+    - cross_agent_communication
+
+  # Spec Kit command integration
+  spec_kit_commands:
+    - /specify
+    - /plan
+    - /tasks
+    - /analyze
+    - /clarify
+
+  # Database integration features
+  database_integration:
+    pm_decision_log: true
+    agent_coordination: true
+    workflow_state: true
+    quality_gate_tracking: true
+
+  # PM orchestration workflows
+  orchestration_workflows:
+    task_decomposition:
+      enabled: true
+      max_depth: 3  # Maximum task breakdown depth
+      min_subtasks: 2
+      max_subtasks: 10
+      capability_matching: true
+
+    agent_assignment:
+      enabled: true
+      load_balancing: true
+      capability_scoring: true
+      parallel_execution: true
+      max_concurrent_agents: 10
+
+    quality_gates:
+      enabled: true
+      stages:
+        - input_validation
+        - content_review
+        - integration_testing
+        - human_approval
+      automation_threshold: 0.85  # 85% automation target
+      escalation_required: true
+
+    decision_capture:
+      enabled: true
+      reasoning_trail: true
+      confidence_scoring: true
+      learning_feedback: true
+
+  # Multi-provider AI integration
+  ai_model_assignment:
+    complex_tasks: "claude-sonnet-4"
+    routine_tasks: "glm-4.5"
+    file_operations: "glm-4.5-air"
+    strategic_decisions: "claude-opus-4"
+
+  # PM coordination patterns
+  coordination_patterns:
+    task_handoff:
+      structured_context: true
+      acceptance_confirmation: true
+      progress_tracking: true
+
+    conflict_resolution:
+      automatic_mediation: true
+      escalation_to_human: true
+      decision_arbitration: true
+
+    parallel_processing:
+      enabled: true
+      dependency_resolution: true
+      resource_optimization: true
+
+  # Human oversight configuration
+  human_oversight:
+    approval_required:
+      - strategic_decisions
+      - architecture_changes
+      - resource_allocation_major
+      - quality_gate_failures
+
+    notification_triggers:
+      - agent_coordination_blocked
+      - quality_threshold_breach
+      - resource_exhaustion_warning
+      - external_service_failure
+
+    escalation_time_limits:
+      routine_decision: 300  # 5 minutes
+      complex_decision: 900  # 15 minutes
+      strategic_decision: 3600  # 1 hour
+
+  # Performance targets
+  performance_targets:
+    task_assignment_time: 2  # seconds
+    agent_coordination_time: 10  # seconds
+    quality_gate_processing: 5  # seconds
+    decision_reasoning_capture: 1  # second
+
+  # Integration with existing PM coordination
+  pm_hub_integration:
+    pmcoordinator_enabled: true
+    decision_capture_enabled: true
+    task_assignment_orchestrator: true
+    quality_gate_orchestrator: true
+
+  # External service coordination
+  external_services:
+    github_integration: true
+    linear_integration: true
+    agui_protocol: true
+    mcp_tool_management: true
+
+  # Agent communication protocols
+  agent_communication:
+    messaging_enabled: true
+    status_synchronization: true
+    context_sharing: true
+    performance_monitoring: true
+
+# Extension metadata
+metadata:
+  version: "1.0.0"
+  created_at: "2025-09-29"
+  last_modified: "2025-09-29"
+  author: "James (Developer)"
+  status: "active"
+  bmad_core_compatibility: "100%"
+
+# Validation rules
+validation:
+  file_size_compliance: true
+  bmad_core_preservation: true
+  integration_tested: true
+  performance_validated: true

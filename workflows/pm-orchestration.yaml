@@ -1,0 +1,355 @@
+---
+# BMAD Auto PM Orchestration Workflow
+# Pure LangGraph workflow for John (PM) central coordination
+workflow_id: pm-orchestration
+version: 3.0
+bmad_compliant: true
+script_free: true
+
+metadata:
+  description: "PM-centric orchestration workflow for BMAD Auto system"
+  agents: [pm, analyst, developer, qa, ux, architect, po, sm]
+  preservation_rule: "Never modify .bmad-core directory"
+  coordination_pattern: "All agents coordinate through PM hub"
+
+# LangGraph State Definition
+state:
+  pm_context:
+    bmad_core_reference: ".bmad-core/agents/pm.md"
+    current_task: null
+    agent_assignments: {}
+    quality_gates: []
+    coordination_log: []
+
+  agent_states:
+    analyst: { status: "idle", current_task: null, context: {} }
+    developer: { status: "idle", current_task: null, context: {} }
+    qa: { status: "idle", current_task: null, context: {} }
+    ux: { status: "idle", current_task: null, context: {} }
+    architect: { status: "idle", current_task: null, context: {} }
+    po: { status: "idle", current_task: null, context: {} }
+    sm: { status: "idle", current_task: null, context: {} }
+
+# LangGraph Workflow Nodes
+nodes:
+  pm_initialization:
+    type: start_node
+    agent: pm
+    bmad_core_load: ".bmad-core/agents/pm.md"
+    bmad_auto_context: ".bmad-auto/agents/pm-orchestrator.md"
+    action: |
+      1. Load PM capabilities from .bmad-core
+      2. Read BMAD Auto orchestration context
+      3. Initialize coordination hub
+      4. Establish agent communication channels
+
+  command_interception:
+    type: interceptor_node
+    agent: command-interceptor
+    bmad_reference: ".bmad-core/tasks/"
+    action: |
+      1. Detect .bmad-core command request
+      2. Validate command against .bmad-core structure
+      3. Create simulation of command execution
+      4. Log interception for PM approval
+    dependencies: [pm_initialization]
+
+  pm_approval_gate:
+    type: decision_node
+    agent: pm
+    action: |
+      1. Review intercepted command
+      2. Validate agent assignment appropriateness
+      3. Check quality gate requirements
+      4. Approve or request modifications
+    routing:
+      approved: agent_assignment
+      modifications_needed: command_modification
+      rejected: coordination_log
+    dependencies: [command_interception]
+
+  agent_assignment:
+    type: coordination_node
+    agent: pm
+    action: |
+      1. Select appropriate agent for task
+      2. Prepare agent context using .bmad-core patterns
+      3. Assign task with clear success criteria
+      4. Establish quality gate checkpoints
+    routing:
+      analyst: analyst_execution
+      developer: developer_execution
+      qa: qa_execution
+      ux: ux_execution
+      architect: architect_execution
+      po: po_execution
+      sm: sm_execution
+    dependencies: [pm_approval_gate]
+
+  analyst_execution:
+    type: agent_node
+    agent: analyst
+    bmad_core_reference: ".bmad-core/agents/analyst.md"
+    bmad_auto_extension: ".bmad-auto/agents/analyst-interceptor.md"
+    action: |
+      1. Load analyst capabilities from .bmad-core
+      2. Apply BMAD Auto intercepting layer enhancements
+      3. Execute task using .bmad-core patterns
+      4. Report back to PM coordination hub
+    dependencies: [agent_assignment]
+    next: pm_quality_gate
+
+  developer_execution:
+    type: agent_node
+    agent: developer
+    bmad_core_reference: ".bmad-core/agents/dev.md"
+    bmad_auto_extension: ".bmad-auto/agents/developer-interceptor.md"
+    action: |
+      1. Load developer capabilities from .bmad-core
+      2. Apply BMAD Auto intercepting layer enhancements
+      3. Execute task using .bmad-core patterns
+      4. Report back to PM coordination hub
+    dependencies: [agent_assignment]
+    next: pm_quality_gate
+
+  qa_execution:
+    type: agent_node
+    agent: qa
+    bmad_core_reference: ".bmad-core/agents/qa.md"
+    bmad_auto_extension: ".bmad-auto/agents/qa-interceptor.md"
+    action: |
+      1. Load QA capabilities from .bmad-core
+      2. Apply BMAD Auto intercepting layer enhancements
+      3. Execute task using .bmad-core patterns
+      4. Report back to PM coordination hub
+    dependencies: [agent_assignment]
+    next: pm_quality_gate
+
+  ux_execution:
+    type: agent_node
+    agent: ux
+    bmad_core_reference: ".bmad-core/agents/ux-expert.md"
+    bmad_auto_extension: ".bmad-auto/agents/ux-interceptor.md"
+    action: |
+      1. Load UX capabilities from .bmad-core
+      2. Apply BMAD Auto intercepting layer enhancements
+      3. Execute task using .bmad-core patterns
+      4. Report back to PM coordination hub
+    dependencies: [agent_assignment]
+    next: pm_quality_gate
+
+  architect_execution:
+    type: agent_node
+    agent: architect
+    bmad_core_reference: ".bmad-core/agents/architect.md"
+    bmad_auto_extension: ".bmad-auto/agents/architect-interceptor.md"
+    action: |
+      1. Load architect capabilities from .bmad-core
+      2. Apply BMAD Auto intercepting layer enhancements
+      3. Execute task using .bmad-core patterns
+      4. Report back to PM coordination hub
+    dependencies: [agent_assignment]
+    next: pm_quality_gate
+
+  po_execution:
+    type: agent_node
+    agent: po
+    bmad_core_reference: ".bmad-core/agents/po.md"
+    bmad_auto_extension: ".bmad-auto/agents/po-interceptor.md"
+    action: |
+      1. Load PO capabilities from .bmad-core
+      2. Apply BMAD Auto intercepting layer enhancements
+      3. Execute task using .bmad-core patterns
+      4. Report back to PM coordination hub
+    dependencies: [agent_assignment]
+    next: pm_quality_gate
+
+  sm_execution:
+    type: agent_node
+    agent: sm
+    bmad_core_reference: ".bmad-core/agents/sm.md"
+    bmad_auto_extension: ".bmad-auto/agents/sm-interceptor.md"
+    action: |
+      1. Load SM capabilities from .bmad-core
+      2. Apply BMAD Auto intercepting layer enhancements
+      3. Execute task using .bmad-core patterns
+      4. Report back to PM coordination hub
+    dependencies: [agent_assignment]
+    next: pm_quality_gate
+
+  pm_quality_gate:
+    type: validation_node
+    agent: pm
+    action: |
+      1. Review agent execution results
+      2. Validate against success criteria
+      3. Check quality gate requirements
+      4. Coordinate cross-agent validation if needed
+    routing:
+      quality_passed: coordination_complete
+      quality_failed: agent_rework
+      cross_validation_needed: cross_agent_review
+    dependencies: [analyst_execution, developer_execution, qa_execution, ux_execution, architect_execution, po_execution, sm_execution]
+
+  cross_agent_review:
+    type: collaboration_node
+    agent: pm
+    action: |
+      1. Identify required reviewing agents
+      2. Coordinate cross-agent validation
+      3. Manage review feedback integration
+      4. Ensure quality standards maintained
+    dependencies: [pm_quality_gate]
+    next: pm_final_approval
+
+  pm_final_approval:
+    type: decision_node
+    agent: pm
+    action: |
+      1. Review all agent contributions
+      2. Validate complete workflow execution
+      3. Check .bmad-core preservation
+      4. Provide final approval or request changes
+    routing:
+      approved: coordination_complete
+      changes_requested: agent_rework
+    dependencies: [cross_agent_review]
+
+  coordination_complete:
+    type: end_node
+    agent: pm
+    action: |
+      1. Log successful coordination
+      2. Update system state
+      3. Prepare for next coordination cycle
+      4. Archive coordination session
+    dependencies: [pm_quality_gate, pm_final_approval]
+
+  agent_rework:
+    type: feedback_node
+    agent: pm
+    action: |
+      1. Provide specific feedback to agent
+      2. Clarify requirements and success criteria
+      3. Re-assign task with updated context
+      4. Schedule follow-up quality gate
+    routing: agent_assignment
+    dependencies: [pm_quality_gate, pm_final_approval]
+
+  command_modification:
+    type: modification_node
+    agent: pm
+    action: |
+      1. Analyze command modification requirements
+      2. Coordinate with relevant agents for input
+      3. Update command parameters
+      4. Re-submit for interception and approval
+    routing: command_interception
+    dependencies: [pm_approval_gate]
+
+  coordination_log:
+    type: logging_node
+    agent: pm
+    action: |
+      1. Log coordination decision and rationale
+      2. Update system knowledge base
+      3. Archive session for future reference
+      4. Notify relevant stakeholders
+    next: coordination_complete
+    dependencies: [pm_approval_gate]
+
+# LangGraph Edge Definitions
+edges:
+  - from: START
+    to: pm_initialization
+  - from: pm_initialization
+    to: command_interception
+  - from: command_interception
+    to: pm_approval_gate
+  - from: pm_approval_gate
+    to: agent_assignment
+    condition: approved
+  - from: pm_approval_gate
+    to: command_modification
+    condition: modifications_needed
+  - from: pm_approval_gate
+    to: coordination_log
+    condition: rejected
+  - from: command_modification
+    to: command_interception
+  - from: coordination_log
+    to: coordination_complete
+  - from: agent_assignment
+    to: [analyst_execution, developer_execution, qa_execution, ux_execution, architect_execution, po_execution, sm_execution]
+  - from: [analyst_execution, developer_execution, qa_execution, ux_execution, architect_execution, po_execution, sm_execution]
+    to: pm_quality_gate
+  - from: pm_quality_gate
+    to: coordination_complete
+    condition: quality_passed
+  - from: pm_quality_gate
+    to: agent_rework
+    condition: quality_failed
+  - from: pm_quality_gate
+    to: cross_agent_review
+    condition: cross_validation_needed
+  - from: cross_agent_review
+    to: pm_final_approval
+  - from: pm_final_approval
+    to: coordination_complete
+    condition: approved
+  - from: pm_final_approval
+    to: agent_rework
+    condition: changes_requested
+  - from: agent_rework
+    to: agent_assignment
+  - from: coordination_complete
+    to: END
+
+# BMAD Auto Preservation Rules
+preservation_rules:
+  bmad_core:
+    rule: "Never modify any files in .bmad-core directory"
+    validation: "All .bmad-core references are read-only"
+    enforcement: "Intercepting layer prevents .bmad-core writes"
+
+  agent_augmentation:
+    rule: "Extend .bmad-core agents with BMAD Auto interceptor layer"
+    pattern: ".bmad-core/agents/{agent}.md + .bmad-auto/agents/{agent}-interceptor.md"
+    validation: "Original .bmad-core agent capabilities preserved"
+
+  task_interception:
+    rule: "Intercept .bmad-core task execution for PM coordination"
+    pattern: ".bmad-core/tasks/{task}.md intercepted by pm-orchestration.yaml"
+    validation: "Original task logic preserved, coordination added"
+
+# Quality Gates
+quality_gates:
+  pm_approval:
+    description: "PM must approve all agent assignments"
+    validation: "PM reviews context, success criteria, quality requirements"
+
+  agent_execution:
+    description: "Agent completes task using .bmad-core + BMAD Auto patterns"
+    validation: "Task completed according to specifications"
+
+  cross_validation:
+    description: "Cross-agent validation when required"
+    validation: "Multiple agents validate shared deliverables"
+
+  final_approval:
+    description: "PM final approval before completion"
+    validation: "Complete workflow meets quality standards"
+
+# Integration Points
+integration:
+  bmad_core_commands:
+    pattern: "Intercept all *.bmad-core command executions"
+    method: "YAML workflow interception, no script execution"
+
+  langgraph_coordination:
+    pattern: "Pure LangGraph state management and workflow execution"
+    method: "YAML-defined workflows with MD agent definitions"
+
+  human_oversight:
+    pattern: "PM approval gates with human escalation capabilities"
+    method: "Quality gate checkpoints with human decision points"

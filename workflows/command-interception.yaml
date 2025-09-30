@@ -1,0 +1,401 @@
+---
+# BMAD Auto Command Interception Workflow
+# Pure YAML workflow for intercepting .bmad-core commands without scripts
+workflow_id: command-interception
+version: 3.0
+bmad_compliant: true
+preservation_focused: true
+
+metadata:
+  description: "Intercept and simulate .bmad-core commands while preserving original functionality"
+  purpose: "Phase 3 - Command simulation & .bmad-core protection"
+  script_replacement: "Replace Python command_simulator.py with pure YAML workflow"
+  integration: "Works with pm-orchestration.yaml for complete coordination"
+
+# LangGraph State for Command Interception
+state:
+  command_request:
+    source_agent: null
+    bmad_core_command: null
+    command_parameters: {}
+    original_context: null
+    interception_timestamp: null
+
+  validation_state:
+    bmad_core_file_exists: false
+    command_structure_valid: false
+    parameters_validated: false
+    preservation_check_passed: false
+    simulation_ready: false
+
+  simulation_state:
+    dry_run_results: {}
+    expected_outputs: []
+    resource_requirements: {}
+    dependency_validation: {}
+    risk_assessment: {}
+
+  approval_state:
+    pm_review_required: true
+    pm_approval_status: null
+    agent_assignment: null
+    execution_authorized: false
+
+# Command Detection and Classification
+command_detection:
+  bmad_core_patterns:
+    create_commands:
+      - "*create-prd"
+      - "*create-story"
+      - "*create-epic"
+      - "*create-doc"
+
+    execution_commands:
+      - "*shard-prd"
+      - "*execute-checklist"
+      - "*qa-gate"
+      - "*correct-course"
+
+    validation_commands:
+      - "*validate-next-story"
+      - "*review-story"
+      - "*nfr-assess"
+      - "*trace-requirements"
+
+  bmad_core_file_mapping:
+    tasks:
+      create-prd: ".bmad-core/tasks/create-doc.md + .bmad-core/templates/prd-tmpl.yaml"
+      create-story: ".bmad-core/tasks/create-next-story.md"
+      create-epic: ".bmad-core/tasks/brownfield-create-epic.md"
+      shard-prd: ".bmad-core/tasks/shard-doc.md"
+      qa-gate: ".bmad-core/tasks/qa-gate.md"
+      correct-course: ".bmad-core/tasks/correct-course.md"
+
+# LangGraph Workflow Nodes
+nodes:
+  command_listener:
+    type: start_node
+    agent: command-interceptor
+    action: |
+      1. Monitor for .bmad-core command requests
+      2. Capture command context and parameters
+      3. Log interception event
+      4. Initialize validation workflow
+    triggers:
+      - agent_command_request
+      - direct_bmad_command
+      - workflow_command_execution
+
+  command_classification:
+    type: analysis_node
+    agent: command-interceptor
+    bmad_core_reference: ".bmad-core/tasks/"
+    action: |
+      1. Identify command type from bmad_core_patterns
+      2. Map to corresponding .bmad-core files
+      3. Extract required parameters and context
+      4. Classify complexity and risk level
+    dependencies: [command_listener]
+    routing:
+      recognized_command: bmad_core_validation
+      unknown_command: command_error_handling
+
+  bmad_core_validation:
+    type: validation_node
+    agent: bmad-core-guardian
+    bmad_core_reference: ".bmad-core/"
+    action: |
+      1. Verify .bmad-core file exists and is readable
+      2. Validate command structure against .bmad-core patterns
+      3. Check parameter compatibility
+      4. Ensure .bmad-core preservation rules
+    preservation_rules:
+      - "Never modify any .bmad-core files"
+      - "Only read-only access to .bmad-core directory"
+      - "Preserve original .bmad-core functionality"
+    dependencies: [command_classification]
+    routing:
+      validation_passed: command_simulation
+      validation_failed: validation_error_handling
+
+  command_simulation:
+    type: simulation_node
+    agent: command-simulator
+    action: |
+      1. Create dry-run simulation of command execution
+      2. Predict expected outputs and side effects
+      3. Validate resource requirements
+      4. Check dependencies and prerequisites
+      5. Generate simulation report
+    simulation_types:
+      create_commands: |
+        - Simulate file creation without actually creating
+        - Validate template usage patterns
+        - Check naming conventions and structure
+
+      execution_commands: |
+        - Simulate task execution workflow
+        - Validate input/output requirements
+        - Check quality gate criteria
+
+      validation_commands: |
+        - Simulate validation checks
+        - Predict validation outcomes
+        - Check compliance requirements
+    dependencies: [bmad_core_validation]
+    routing:
+      simulation_successful: pm_approval_request
+      simulation_failed: simulation_error_handling
+
+  pm_approval_request:
+    type: coordination_node
+    agent: command-interceptor
+    pm_integration: "workflows/pm-orchestration.yaml"
+    action: |
+      1. Package simulation results for PM review
+      2. Include risk assessment and recommendations
+      3. Prepare context for PM decision
+      4. Submit to PM orchestration workflow
+    approval_package:
+      - original_command_request
+      - simulation_results
+      - risk_assessment
+      - resource_requirements
+      - recommended_agent_assignment
+    dependencies: [command_simulation]
+    routing:
+      pm_orchestration: pm_orchestration_workflow
+
+  execution_authorization:
+    type: decision_node
+    agent: pm
+    integration_point: "pm-orchestration.yaml:pm_approval_gate"
+    action: |
+      1. Receive PM approval decision
+      2. Process any modifications or conditions
+      3. Authorize agent execution or request changes
+      4. Log approval decision and rationale
+    dependencies: [pm_approval_request]
+    routing:
+      approved: agent_execution_handoff
+      modifications_required: command_modification
+      rejected: execution_denied
+
+  agent_execution_handoff:
+    type: handoff_node
+    agent: command-interceptor
+    pm_coordination: "workflows/pm-orchestration.yaml:agent_assignment"
+    action: |
+      1. Prepare agent context using .bmad-core patterns
+      2. Include BMAD Auto intercepting layer enhancements
+      3. Transfer execution to appropriate agent
+      4. Monitor execution progress
+    handoff_pattern:
+      bmad_core_context: ".bmad-core/agents/{agent}.md"
+      bmad_auto_enhancement: ".bmad-auto/agents/{agent}-interceptor.md"
+      execution_context: "Merged context from both sources"
+    dependencies: [execution_authorization]
+    routing:
+      analyst: analyst_interceptor_execution
+      developer: developer_interceptor_execution
+      qa: qa_interceptor_execution
+      ux: ux_interceptor_execution
+      architect: architect_interceptor_execution
+      po: po_interceptor_execution
+      sm: sm_interceptor_execution
+
+  execution_monitoring:
+    type: monitoring_node
+    agent: command-interceptor
+    action: |
+      1. Monitor agent execution progress
+      2. Validate .bmad-core preservation during execution
+      3. Track resource usage and performance
+      4. Prepare execution report
+    monitoring_checks:
+      - ".bmad-core directory integrity"
+      - "Agent adherence to original .bmad-core patterns"
+      - "Quality gate compliance"
+      - "Resource usage within limits"
+    dependencies: [agent_execution_handoff]
+    next: execution_completion
+
+  execution_completion:
+    type: completion_node
+    agent: command-interceptor
+    action: |
+      1. Validate execution results against simulation
+      2. Confirm .bmad-core preservation
+      3. Generate completion report
+      4. Log successful interception cycle
+    completion_validation:
+      - "Results match simulation predictions"
+      - ".bmad-core files unchanged"
+      - "Quality standards met"
+      - "No unauthorized modifications"
+    dependencies: [execution_monitoring]
+    routing:
+      completion_successful: interception_success
+      completion_issues: execution_review
+
+  # Error Handling Nodes
+  command_error_handling:
+    type: error_node
+    agent: command-interceptor
+    action: |
+      1. Log unrecognized command
+      2. Provide helpful error message
+      3. Suggest valid .bmad-core commands
+      4. Escalate to PM if needed
+    dependencies: [command_classification]
+    next: interception_failure
+
+  validation_error_handling:
+    type: error_node
+    agent: bmad-core-guardian
+    action: |
+      1. Log validation failure details
+      2. Identify specific validation issues
+      3. Provide corrective action suggestions
+      4. Protect .bmad-core from invalid operations
+    dependencies: [bmad_core_validation]
+    next: interception_failure
+
+  simulation_error_handling:
+    type: error_node
+    agent: command-simulator
+    action: |
+      1. Log simulation failure reasons
+      2. Analyze simulation bottlenecks
+      3. Provide alternative approaches
+      4. Escalate complex simulation issues
+    dependencies: [command_simulation]
+    next: interception_failure
+
+  command_modification:
+    type: modification_node
+    agent: command-interceptor
+    action: |
+      1. Apply PM-requested modifications
+      2. Re-run validation and simulation
+      3. Update command parameters
+      4. Re-submit for approval
+    dependencies: [execution_authorization]
+    routing: bmad_core_validation
+
+  execution_denied:
+    type: denial_node
+    agent: command-interceptor
+    action: |
+      1. Log PM denial with rationale
+      2. Notify requesting agent
+      3. Archive unsuccessful request
+      4. Update system knowledge base
+    dependencies: [execution_authorization]
+    next: interception_failure
+
+  execution_review:
+    type: review_node
+    agent: command-interceptor
+    pm_escalation: true
+    action: |
+      1. Review execution issues
+      2. Determine corrective actions
+      3. Escalate to PM if needed
+      4. Plan remediation steps
+    dependencies: [execution_completion]
+    routing:
+      issues_resolved: interception_success
+      pm_review_required: pm_escalation
+
+  # Terminal Nodes
+  interception_success:
+    type: end_node
+    agent: command-interceptor
+    action: |
+      1. Log successful command interception
+      2. Update system metrics
+      3. Archive session data
+      4. Prepare for next interception
+    success_metrics:
+      - "Command successfully intercepted and executed"
+      - ".bmad-core preservation maintained"
+      - "PM coordination workflow completed"
+      - "Agent execution met quality standards"
+    dependencies: [execution_completion, execution_review]
+
+  interception_failure:
+    type: end_node
+    agent: command-interceptor
+    action: |
+      1. Log interception failure with details
+      2. Update failure metrics
+      3. Archive failure data for analysis
+      4. Generate improvement recommendations
+    failure_analysis:
+      - "Root cause identification"
+      - "Prevention strategies"
+      - "System improvement recommendations"
+      - "Knowledge base updates"
+    dependencies: [command_error_handling, validation_error_handling, simulation_error_handling, execution_denied]
+
+# Integration with Other Workflows
+workflow_integration:
+  pm_orchestration:
+    file: "workflows/pm-orchestration.yaml"
+    integration_points:
+      - "pm_approval_gate"
+      - "agent_assignment"
+      - "pm_quality_gate"
+
+  bmad_core_preservation:
+    file: "workflows/bmad-core-protection.yaml"
+    integration_points:
+      - "file_system_monitoring"
+      - "preservation_validation"
+      - "integrity_checking"
+
+# BMAD Core Command Mapping
+bmad_core_mapping:
+  file_structure:
+    agents: ".bmad-core/agents/{agent}.md"
+    tasks: ".bmad-core/tasks/{task}.md"
+    templates: ".bmad-core/templates/{template}.yaml"
+    workflows: ".bmad-core/workflows/{workflow}.yaml"
+    checklists: ".bmad-core/checklists/{checklist}.md"
+
+  command_to_file_mapping:
+    "*create-prd":
+      task_file: ".bmad-core/tasks/create-doc.md"
+      template_file: ".bmad-core/templates/prd-tmpl.yaml"
+      agent_requirement: "pm"
+
+    "*create-story":
+      task_file: ".bmad-core/tasks/create-next-story.md"
+      agent_requirement: "pm"
+
+    "*shard-prd":
+      task_file: ".bmad-core/tasks/shard-doc.md"
+      agent_requirement: "pm"
+
+    "*qa-gate":
+      task_file: ".bmad-core/tasks/qa-gate.md"
+      agent_requirement: "qa"
+
+# Quality Assurance
+quality_gates:
+  interception_quality:
+    validation: "All .bmad-core commands properly intercepted"
+    measurement: "100% interception rate for recognized commands"
+
+  preservation_quality:
+    validation: ".bmad-core directory remains unchanged"
+    measurement: "Zero unauthorized modifications to .bmad-core"
+
+  execution_quality:
+    validation: "Agent execution follows .bmad-core patterns"
+    measurement: "Execution results match .bmad-core expectations"
+
+  coordination_quality:
+    validation: "PM coordination workflow completed successfully"
+    measurement: "All PM approval gates passed"

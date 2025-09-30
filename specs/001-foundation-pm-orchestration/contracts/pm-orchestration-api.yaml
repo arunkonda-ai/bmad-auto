@@ -1,0 +1,675 @@
+openapi: 3.0.3
+info:
+  title: PM Orchestration Hub API
+  description: Core API for PM-centric agent coordination and workflow management
+  version: 1.0.0
+  contact:
+    name: BMAD Auto Team
+
+servers:
+  - url: http://localhost:8000/api/v1
+    description: Local development server
+
+paths:
+  /pm/decisions:
+    post:
+      summary: Create new PM decision context
+      description: Capture complete PM decision-making context and reasoning
+      operationId: createPMDecision
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/PMDecisionRequest'
+      responses:
+        '201':
+          description: PM decision created successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PMDecisionResponse'
+        '400':
+          description: Invalid decision data
+        '500':
+          description: Internal server error
+
+    get:
+      summary: List PM decisions
+      description: Retrieve PM decisions with filtering and pagination
+      operationId: listPMDecisions
+      parameters:
+        - name: decision_type
+          in: query
+          schema:
+            $ref: '#/components/schemas/DecisionType'
+        - name: agent_id
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+            maximum: 100
+        - name: offset
+          in: query
+          schema:
+            type: integer
+            default: 0
+      responses:
+        '200':
+          description: PM decisions retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  decisions:
+                    type: array
+                    items:
+                      $ref: '#/components/schemas/PMDecisionResponse'
+                  total:
+                    type: integer
+                  limit:
+                    type: integer
+                  offset:
+                    type: integer
+
+  /pm/decisions/{decision_id}:
+    get:
+      summary: Get PM decision by ID
+      description: Retrieve specific PM decision with full context
+      operationId: getPMDecision
+      parameters:
+        - name: decision_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: PM decision retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/PMDecisionResponse'
+        '404':
+          description: PM decision not found
+
+  /agents:
+    get:
+      summary: List all agents
+      description: Retrieve current status of all agents in the ecosystem
+      operationId: listAgents
+      parameters:
+        - name: status
+          in: query
+          schema:
+            $ref: '#/components/schemas/AgentStatus'
+        - name: role
+          in: query
+          schema:
+            $ref: '#/components/schemas/AgentRole'
+      responses:
+        '200':
+          description: Agents retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/AgentStateResponse'
+
+  /agents/{agent_id}:
+    get:
+      summary: Get agent state
+      description: Retrieve current state and status of specific agent
+      operationId: getAgentState
+      parameters:
+        - name: agent_id
+          in: path
+          required: true
+          schema:
+            type: string
+      responses:
+        '200':
+          description: Agent state retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentStateResponse'
+        '404':
+          description: Agent not found
+
+    patch:
+      summary: Update agent state
+      description: Update agent status or configuration
+      operationId: updateAgentState
+      parameters:
+        - name: agent_id
+          in: path
+          required: true
+          schema:
+            type: string
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/AgentStateUpdate'
+      responses:
+        '200':
+          description: Agent state updated successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/AgentStateResponse'
+        '400':
+          description: Invalid update data
+        '404':
+          description: Agent not found
+
+  /workflows:
+    post:
+      summary: Start new workflow
+      description: Initiate new workflow execution with context
+      operationId: startWorkflow
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/WorkflowStartRequest'
+      responses:
+        '201':
+          description: Workflow started successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowResponse'
+        '400':
+          description: Invalid workflow data
+
+    get:
+      summary: List workflows
+      description: Retrieve workflow executions with filtering
+      operationId: listWorkflows
+      parameters:
+        - name: status
+          in: query
+          schema:
+            $ref: '#/components/schemas/WorkflowStatus'
+        - name: agent_id
+          in: query
+          schema:
+            type: string
+        - name: limit
+          in: query
+          schema:
+            type: integer
+            default: 50
+      responses:
+        '200':
+          description: Workflows retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/WorkflowResponse'
+
+  /workflows/{execution_id}:
+    get:
+      summary: Get workflow execution
+      description: Retrieve specific workflow execution details
+      operationId: getWorkflowExecution
+      parameters:
+        - name: execution_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Workflow execution retrieved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/WorkflowResponse'
+        '404':
+          description: Workflow execution not found
+
+  /quality-gates:
+    get:
+      summary: List quality gates
+      description: Retrieve quality gates requiring approval
+      operationId: listQualityGates
+      parameters:
+        - name: status
+          in: query
+          schema:
+            $ref: '#/components/schemas/ApprovalStatus'
+        - name: workflow_id
+          in: query
+          schema:
+            type: string
+            format: uuid
+      responses:
+        '200':
+          description: Quality gates retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/QualityGateResponse'
+
+  /quality-gates/{gate_id}/approve:
+    post:
+      summary: Approve quality gate
+      description: Provide PM approval for quality gate
+      operationId: approveQualityGate
+      parameters:
+        - name: gate_id
+          in: path
+          required: true
+          schema:
+            type: string
+            format: uuid
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/QualityGateApproval'
+      responses:
+        '200':
+          description: Quality gate approved successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/QualityGateResponse'
+        '400':
+          description: Invalid approval data
+        '404':
+          description: Quality gate not found
+
+  /models/assign:
+    post:
+      summary: Assign AI model to task
+      description: Create intelligent model assignment for agent task
+      operationId: assignModel
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/ModelAssignmentRequest'
+      responses:
+        '201':
+          description: Model assigned successfully
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/ModelAssignmentResponse'
+        '400':
+          description: Invalid assignment data
+
+  /metrics/resources:
+    get:
+      summary: Get resource metrics
+      description: Retrieve current system and agent resource utilization
+      operationId: getResourceMetrics
+      parameters:
+        - name: agent_id
+          in: query
+          schema:
+            type: string
+        - name: time_range
+          in: query
+          schema:
+            type: string
+            enum: ['1h', '6h', '24h', '7d']
+            default: '1h'
+      responses:
+        '200':
+          description: Resource metrics retrieved successfully
+          content:
+            application/json:
+              schema:
+                type: array
+                items:
+                  $ref: '#/components/schemas/ResourceMetricsResponse'
+
+components:
+  schemas:
+    DecisionType:
+      type: string
+      enum:
+        - task_assignment
+        - quality_gate
+        - resource_allocation
+        - escalation
+        - model_assignment
+
+    AgentRole:
+      type: string
+      enum:
+        - pm
+        - architect
+        - developer
+        - qa
+        - ux
+        - analyst
+        - coordinator
+        - specialist
+
+    AgentStatus:
+      type: string
+      enum:
+        - active
+        - busy
+        - idle
+        - error
+        - offline
+
+    WorkflowStatus:
+      type: string
+      enum:
+        - pending
+        - running
+        - paused
+        - completed
+        - failed
+        - cancelled
+
+    ApprovalStatus:
+      type: string
+      enum:
+        - pending
+        - in_review
+        - approved
+        - rejected
+        - requires_revision
+
+    PMDecisionRequest:
+      type: object
+      required:
+        - decision_type
+        - context_data
+        - reasoning_process
+        - outcome
+        - confidence_score
+      properties:
+        decision_type:
+          $ref: '#/components/schemas/DecisionType'
+        context_data:
+          type: object
+        reasoning_process:
+          type: string
+          minLength: 10
+        outcome:
+          type: string
+          minLength: 5
+        confidence_score:
+          type: integer
+          minimum: 1
+          maximum: 10
+        agent_assignments:
+          type: object
+        resource_optimization:
+          type: object
+        learning_notes:
+          type: string
+
+    PMDecisionResponse:
+      allOf:
+        - $ref: '#/components/schemas/PMDecisionRequest'
+        - type: object
+          properties:
+            decision_id:
+              type: string
+              format: uuid
+            created_at:
+              type: string
+              format: date-time
+            updated_at:
+              type: string
+              format: date-time
+
+    AgentStateUpdate:
+      type: object
+      properties:
+        status:
+          $ref: '#/components/schemas/AgentStatus'
+        capabilities:
+          type: array
+          items:
+            type: string
+        extension_config:
+          type: object
+
+    AgentStateResponse:
+      type: object
+      properties:
+        agent_id:
+          type: string
+        agent_name:
+          type: string
+        agent_role:
+          $ref: '#/components/schemas/AgentRole'
+        status:
+          $ref: '#/components/schemas/AgentStatus'
+        capabilities:
+          type: array
+          items:
+            type: string
+        active_tasks:
+          type: array
+          items:
+            type: string
+        resource_utilization:
+          type: object
+        performance_metrics:
+          type: object
+        last_activity:
+          type: string
+          format: date-time
+        created_at:
+          type: string
+          format: date-time
+        updated_at:
+          type: string
+          format: date-time
+
+    WorkflowStartRequest:
+      type: object
+      required:
+        - workflow_name
+        - trigger_type
+        - triggered_by
+      properties:
+        workflow_name:
+          type: string
+        trigger_type:
+          type: string
+          enum:
+            - manual
+            - scheduled
+            - agent_request
+            - quality_gate
+            - escalation
+        triggered_by:
+          type: string
+        input_context:
+          type: object
+
+    WorkflowResponse:
+      type: object
+      properties:
+        execution_id:
+          type: string
+          format: uuid
+        workflow_name:
+          type: string
+        execution_status:
+          $ref: '#/components/schemas/WorkflowStatus'
+        trigger_type:
+          type: string
+        triggered_by:
+          type: string
+        current_phase:
+          type: string
+        task_assignments:
+          type: object
+        pending_approvals:
+          type: array
+          items:
+            type: string
+        started_at:
+          type: string
+          format: date-time
+        completed_at:
+          type: string
+          format: date-time
+        last_activity:
+          type: string
+          format: date-time
+
+    QualityGateApproval:
+      type: object
+      required:
+        - approval_status
+        - pm_decision
+      properties:
+        approval_status:
+          $ref: '#/components/schemas/ApprovalStatus'
+        pm_decision:
+          type: string
+          minLength: 10
+        quality_score:
+          type: number
+          minimum: 0.0
+          maximum: 10.0
+        improvement_suggestions:
+          type: string
+
+    QualityGateResponse:
+      type: object
+      properties:
+        gate_id:
+          type: string
+          format: uuid
+        gate_name:
+          type: string
+        workflow_execution_id:
+          type: string
+          format: uuid
+        gate_type:
+          type: string
+        validation_criteria:
+          type: object
+        approval_status:
+          $ref: '#/components/schemas/ApprovalStatus'
+        pm_decision:
+          type: string
+        quality_score:
+          type: number
+        escalation_required:
+          type: boolean
+        created_at:
+          type: string
+          format: date-time
+        reviewed_at:
+          type: string
+          format: date-time
+
+    ModelAssignmentRequest:
+      type: object
+      required:
+        - agent_id
+        - task_id
+        - task_complexity
+      properties:
+        agent_id:
+          type: string
+        task_id:
+          type: string
+        task_complexity:
+          type: integer
+          minimum: 1
+          maximum: 10
+        provider_preference:
+          type: string
+          enum:
+            - claude_code
+            - anthropic_claude
+            - zai_glm
+
+    ModelAssignmentResponse:
+      type: object
+      properties:
+        assignment_id:
+          type: string
+          format: uuid
+        agent_id:
+          type: string
+        task_id:
+          type: string
+        provider_name:
+          type: string
+        model_name:
+          type: string
+        assignment_reason:
+          type: string
+        task_complexity:
+          type: integer
+        estimated_cost:
+          type: number
+        assignment_status:
+          type: string
+        created_at:
+          type: string
+          format: date-time
+
+    ResourceMetricsResponse:
+      type: object
+      properties:
+        metric_id:
+          type: string
+          format: uuid
+        measurement_time:
+          type: string
+          format: date-time
+        agent_id:
+          type: string
+          nullable: true
+        cpu_usage:
+          type: number
+          minimum: 0.0
+          maximum: 100.0
+        memory_usage:
+          type: number
+        disk_usage:
+          type: number
+        active_sessions:
+          type: integer
+        database_connections:
+          type: integer
+        response_time:
+          type: integer
+        error_rate:
+          type: number
+        optimization_score:
+          type: number
+        alert_level:
+          type: string
+          enum:
+            - normal
+            - warning
+            - critical
+            - emergency

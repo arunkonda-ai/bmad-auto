@@ -1,0 +1,263 @@
+# BMAD Auto Developer Agent Extension
+# Purpose: Enhance .bmad-core Developer with task breakdown and autonomous implementation
+# Priority: HIGH (Core functionality)
+
+extension:
+  name: "dev-extension"
+  version: "1.0"
+  type: "agent_extension"
+  extends: ".bmad-core/agents/dev.md"
+
+  # Core Enhancement Capabilities
+  additional_capabilities:
+    - task_breakdown_processing
+    - quality_gate_integration
+    - autonomous_implementation
+    - code_review_workflows
+    - test_driven_development
+    - continuous_integration_coordination
+
+  # Spec Kit Integration
+  speckit_commands:
+    - "/tasks"
+    - "/implement"
+
+  # BMAD Core Integration
+  bmad_core_integration:
+    preservation: "complete"
+    commands: "all_dev_commands_preserved"
+    enhanced_workflows: true
+    autonomous_code_generation: true
+    template_access: "development_templates"
+    checklist_integration: "automated"
+
+  # Autonomous Development Framework
+  autonomous_development_framework:
+
+    # Task Processing Intelligence
+    task_processing:
+      requirement_analysis:
+        - extract_implementation_requirements
+        - identify_technical_dependencies
+        - assess_implementation_complexity
+        - determine_testing_strategy
+
+      task_breakdown_optimization:
+        - atomic_task_identification
+        - dependency_sequencing
+        - parallel_execution_opportunities
+        - resource_requirement_estimation
+
+      implementation_planning:
+        - development_approach_selection
+        - testing_strategy_definition
+        - quality_checkpoint_planning
+        - integration_consideration
+
+    # Code Generation & Implementation
+    code_implementation:
+      development_standards:
+        - coding_convention_adherence
+        - design_pattern_implementation
+        - performance_optimization
+        - security_best_practices
+
+      quality_assurance:
+        - unit_test_creation
+        - code_documentation
+        - error_handling_implementation
+        - logging_integration
+
+      continuous_validation:
+        - real_time_quality_checks
+        - automated_testing_execution
+        - performance_monitoring
+        - security_validation
+
+  # Quality Gate Integration
+  quality_gate_coordination:
+
+    # Development Quality Gates
+    code_quality_gates:
+      implementation_completeness:
+        - requirement_fulfillment_validation
+        - functionality_implementation_check
+        - edge_case_handling_verification
+        - error_condition_management
+
+      code_standards_compliance:
+        - coding_convention_validation
+        - design_pattern_adherence
+        - performance_guideline_compliance
+        - security_standard_implementation
+
+      testing_completeness:
+        - unit_test_coverage_validation
+        - integration_test_preparation
+        - test_case_comprehensiveness
+        - test_automation_implementation
+
+    # Quality Validation Workflows
+    validation_workflows:
+      automated_validation:
+        - static_code_analysis
+        - automated_testing_execution
+        - performance_benchmark_validation
+        - security_vulnerability_scanning
+
+      manual_review_coordination:
+        - code_review_preparation
+        - documentation_completeness_check
+        - architecture_compliance_validation
+        - implementation_approach_justification
+
+  # Cross-Agent Coordination
+  cross_agent_coordination:
+
+    # Architect Coordination
+    architect_coordination:
+      technical_clarification:
+        - implementation_approach_validation
+        - architecture_pattern_confirmation
+        - technical_constraint_clarification
+        - performance_requirement_validation
+
+      design_feedback:
+        - implementation_feasibility_feedback
+        - technical_complexity_assessment
+        - alternative_approach_suggestions
+        - optimization_opportunity_identification
+
+    # QA Coordination
+    qa_coordination:
+      testing_collaboration:
+        - test_case_development_coordination
+        - testing_framework_integration
+        - quality_metrics_definition
+        - defect_resolution_coordination
+
+      quality_validation:
+        - implementation_quality_validation
+        - test_coverage_assessment
+        - performance_validation_support
+        - security_testing_coordination
+
+    # PM Coordination
+    pm_coordination:
+      progress_reporting:
+        - implementation_milestone_updates
+        - quality_gate_completion_status
+        - timeline_impact_assessment
+        - resource_requirement_communication
+
+      requirement_clarification:
+        - implementation_requirement_refinement
+        - acceptance_criteria_validation
+        - scope_boundary_clarification
+        - priority_confirmation
+
+  # Test-Driven Development Integration
+  tdd_integration:
+
+    # Test-First Development
+    test_first_approach:
+      test_specification:
+        - requirement_based_test_creation
+        - edge_case_test_development
+        - performance_test_specification
+        - integration_test_planning
+
+      implementation_validation:
+        - test_driven_implementation
+        - continuous_test_execution
+        - refactoring_with_test_safety
+        - regression_prevention
+
+    # Quality Assurance
+    continuous_quality:
+      automated_testing:
+        - unit_test_automation
+        - integration_test_execution
+        - performance_test_monitoring
+        - security_test_validation
+
+      quality_metrics:
+        - code_coverage_tracking
+        - quality_score_monitoring
+        - performance_benchmark_validation
+        - technical_debt_assessment
+
+  # Enhanced Development Capabilities
+  enhanced_capabilities:
+
+    # Performance Optimization
+    performance_optimization:
+      - code_performance_analysis
+      - optimization_opportunity_identification
+      - resource_utilization_optimization
+      - scalability_consideration_implementation
+
+    # Security Implementation
+    security_implementation:
+      - security_best_practice_implementation
+      - vulnerability_prevention
+      - secure_coding_standard_adherence
+      - security_testing_integration
+
+    # Code Quality Management
+    code_quality_management:
+      - refactoring_opportunity_identification
+      - technical_debt_reduction
+      - maintainability_improvement
+      - documentation_quality_enhancement
+
+  # Integration Safeguards
+  integration_safeguards:
+
+    # BMAD Core Preservation
+    bmad_core_preservation:
+      - zero_modification_guarantee
+      - complete_backward_compatibility
+      - original_command_functionality
+      - extension_rollback_capability
+
+    # Quality Validation
+    quality_validation:
+      - extension_compatibility_checks
+      - functionality_regression_testing
+      - performance_impact_monitoring
+      - development_workflow_validation
+
+    # Error Handling
+    error_handling:
+      graceful_degradation:
+        - fallback_to_core_functionality
+        - extension_disable_capability
+        - manual_override_options
+        - comprehensive_error_logging
+
+      recovery_mechanisms:
+        - automatic_retry_protocols
+        - escalation_to_architect_review
+        - context_preservation_during_errors
+        - learning_from_implementation_failures
+
+  # Monitoring & Observability
+  monitoring:
+    performance_metrics:
+      - implementation_completion_time
+      - code_quality_scores
+      - test_coverage_percentage
+      - defect_resolution_time
+
+    quality_indicators:
+      - quality_gate_pass_rate
+      - code_review_feedback_scores
+      - performance_optimization_gains
+      - security_validation_completeness
+
+    langfuse_integration:
+      - implementation_decision_tracking
+      - quality_validation_metrics
+      - test_execution_results
+      - development_workflow_performance
