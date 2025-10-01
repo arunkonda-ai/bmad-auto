@@ -69,3 +69,31 @@ archive/**/.git/
 
 # Development workspace links
 test-projects/
+
+# Private development documentation (session handoffs, PM decisions)
+docs/pm/SESSION-*.md
+docs/pm/PM-DECISION-*.md
+docs/pm/PM-URGENT-*.md
+docs/pm/PM-HOTFIX-*.md
+docs/pm/*-AUDIT-*.md
+docs/pm/JAMES-*.md
+docs/dev/SESSION-*.md
+docs/operations/SESSION-*.md
+
+# Local development notes and working files
+docs/**/*-WORKING.md
+docs/**/*-DRAFT.md
+docs/**/*-LOCAL.md
+*.local.md
+
+# API keys and secrets (redundant safety)
+**/secrets/
+**/.secrets/
+*.key
+*.pem
+credentials.json
+
+# Local testing and debugging
+debug/
+scratch/
+local-tests/
