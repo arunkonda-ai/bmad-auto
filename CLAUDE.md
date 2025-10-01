@@ -80,7 +80,7 @@ bmad_auto_role:
 ```yaml
 # Claude Code configuration for BMAD Auto
 model_assignment_strategy:
-  complex_architecture: "claude-sonnet-4-20250514"
+  complex_architecture: "claude-sonnet-4-5-20250929"
   routine_development: "glm-4.5"
   file_search_syntax: "glm-4.5-air"
   agent_coordination: "local_claude_code_terminal"

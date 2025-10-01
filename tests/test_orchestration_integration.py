@@ -9,7 +9,7 @@ import os
 from unittest.mock import patch, MagicMock
 
 # Import the refactored orchestration components
-from ..orchestration import TaskAssignmentOrchestrator, QualityGateOrchestrator
+from orchestration import TaskAssignmentOrchestrator, QualityGateOrchestrator
 
 
 class TestOrchestrationIntegration(unittest.TestCase):
