@@ -38,7 +38,40 @@ class TaskAssignmentOrchestrator:
 
     def assign_task(self, task_data: dict) -> dict:
         """Assign task to optimal agent"""
-        return self.engine.assign_task(task_data)
+        from .capability_matcher import TaskRequirement, AgentCapability
+
+        # Convert dict to TaskRequirement
+        task = TaskRequirement(
+            task_id=task_data.get('task_id', 'unknown'),
+            required_capabilities=task_data.get('requirements', []),
+            priority=task_data.get('priority', 'medium'),
+            estimated_hours=task_data.get('estimated_hours', 0),
+            dependencies=task_data.get('dependencies', [])
+        )
+
+        # Create mock agents for testing (in production, load from database)
+        agents = [
+            AgentCapability(
+                agent_id='james',
+                agent_type='developer',
+                capabilities=['python', 'testing', 'development'],
+                current_workload=0.5,
+                performance_score=0.9
+            )
+        ]
+
+        # Assign tasks
+        assignments, report = self.engine.assign_tasks([task], agents)
+
+        if assignments:
+            assignment = assignments[0]
+            return {
+                'task_id': assignment.task_id,
+                'assigned_agent': assignment.assigned_agent_id,
+                'confidence': assignment.assignment_confidence,
+                'reasoning': assignment.assignment_reasoning
+            }
+        return {'error': 'No suitable agent found'}
 
     def get_agent_workload(self, agent_id: str) -> dict:
         """Get current agent workload"""
